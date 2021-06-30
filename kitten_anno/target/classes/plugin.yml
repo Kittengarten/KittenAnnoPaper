@@ -1,0 +1,9 @@
+name: Kitten_Anno
+main: tk.iluyf.mc.KittenAnno
+version: 1.0
+api-version: 1.17
+author: Kittengarten
+commands:
+  kittenanno:
+    description: Get today's date (World_Tree_Anno)
+    aliases: [anno]

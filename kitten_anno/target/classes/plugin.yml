@@ -5,5 +5,13 @@ api-version: 1.17
 author: Kittengarten
 commands:
   kittenanno:
-    description: Get today's date (World_Tree_Anno)
+    description: Get today's date. (World_Tree_Anno)
     aliases: [anno]
+permissions:
+  kittenanno.*:
+    description: Gives access to all kittenanno commands.
+    children:
+      kittenanno.anno: true
+  kittenanno.anno:
+    description: Allows you to use World_Tree_Anno.
+    default: true

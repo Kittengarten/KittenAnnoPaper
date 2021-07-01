@@ -6,18 +6,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import static org.bukkit.ChatColor.*;
 
-public final class KittenAnno extends JavaPlugin {
-    long annoTick;
-    long annoTickNew;
-    long annoDay;
-    long annoDayNew;
-    String annoString;
+public final class KittenAnno extends JavaPlugin implements Listener {
 
     private void annoBroadcast(String annoString) {
         Bukkit.broadcastMessage(annoString);
+    }
+
+    private String getAnnoBroadcast() {
+        long annoTick = Bukkit.getWorlds().get(0).getGameTime();
+        long annoDay = 1 + annoTick / 24000;
+        AnnoCompute annoCompute_ = new AnnoCompute();
+        return annoCompute_.main(annoDay);
     }
 
     @Override
@@ -28,22 +33,14 @@ public final class KittenAnno extends JavaPlugin {
     @Override
     public void onEnable() {
         Bukkit.getPluginCommand("kittenanno").setExecutor(new AnnoCommand());
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
         getLogger().info(GREEN + "世界树纪元开始运行。");
-
         new BukkitRunnable() {
             @Override
             public void run() {
-                annoTickNew = Bukkit.getWorlds().get(0).getGameTime();
-                annoDay = 1 + annoTick / 24000;
-                annoDayNew = 1 + annoTickNew / 24000;
-                if (annoDayNew > annoDay) {
-                    AnnoCompute annoCompute_ = new AnnoCompute();
-                    String annoString = annoCompute_.main(annoDayNew);
-                    annoBroadcast(annoString);
-                }
-                annoTick = annoTickNew;
+                annoBroadcast(getAnnoBroadcast());
             }
-        }.runTaskTimer(this, 100L, 1000L);
+        }.runTaskTimer(this, 100L, 24000L);
 
     }
 
@@ -55,18 +52,21 @@ public final class KittenAnno extends JavaPlugin {
     public class AnnoCommand implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            if (cmd.getName().equalsIgnoreCase("anno") || cmd.getName().equalsIgnoreCase("kittenanno")) {
-                annoTickNew = Bukkit.getWorlds().get(0).getGameTime();
-                annoDay = 1 + annoTick / 24000;
-                annoDayNew = 1 + annoTickNew / 24000;
-                annoTick = annoTickNew;
-                AnnoCompute annoCompute_ = new AnnoCompute();
-                String annoString = annoCompute_.main(annoDayNew);
-                sender.sendMessage(annoString);
-                return true;
+            if (sender.hasPermission("kittenanno.anno")) {
+                if (cmd.getName().equalsIgnoreCase("anno") || cmd.getName().equalsIgnoreCase("kittenanno")) {
+                    sender.sendMessage(getAnnoBroadcast());
+                    return true;
+                }
             }
             return false;
         }
     }
 
+    public final class JoinListener implements Listener {
+        @EventHandler
+        public void onJoin(PlayerJoinEvent event) {
+            event.getPlayer().sendMessage(getConfig().getString("welcome_messages"));
+            event.getPlayer().sendMessage("今天是" + getAnnoBroadcast());
+        }
+    }
 }

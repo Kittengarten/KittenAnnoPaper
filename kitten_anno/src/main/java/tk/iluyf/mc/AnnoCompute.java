@@ -14,8 +14,8 @@ public class AnnoCompute {
     short monthCycle_FirstdayDay[] = new short[monthCycle + 1];
     short yearCycle_FirstmonthMonth[] = new short[yearCycle + 1];
 
-    public String main(long annoDayNew) {
-        return annoToString(annoDayNew);
+    public String output(long annoDay) {
+        return annoToString(annoDay);
     }
 
     public AnnoCompute() {
@@ -103,9 +103,9 @@ public class AnnoCompute {
         return yearMonthNumber;
     }
 
-    private String annoToString(long annoDayNew) {
+    private String annoToString(long annoDay) {
         long monthDay[] = new long[2];
-        monthDay = dayToMonth(annoDayNew);
+        monthDay = dayToMonth(annoDay);
         short dayNumber = (short) monthDay[1];
         long yearMonth[] = new long[2];
         yearMonth = monthToYear(monthDay[0]);
@@ -116,6 +116,23 @@ public class AnnoCompute {
                     + dayConvert((short) dayNumber);
         } else {
             return "";
+        }
+    }
+
+    public long[] annoToValue(long annoDay) {
+        long monthDay[] = new long[2];
+        monthDay = dayToMonth(annoDay);
+        short dayNumber = (short) monthDay[1];
+        long yearMonth[] = new long[2];
+        yearMonth = monthToYear(monthDay[0]);
+        short monthNumber = (short) yearMonth[1];
+        long yearNumber = yearMonth[0];
+        if (yearNumber > 0 && monthNumber >= 0 && dayNumber > 0) {
+            long[] returnValue = { yearNumber, monthNumber, dayNumber };
+            return returnValue;
+        } else {
+            long[] returnValue = { -1L, -1L, -1L };
+            return returnValue;
         }
     }
 

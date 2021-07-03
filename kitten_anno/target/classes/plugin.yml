@@ -1,6 +1,6 @@
 name: Kitten_Anno
 main: tk.iluyf.mc.KittenAnno
-version: 1.0
+version: 2.0
 api-version: 1.17
 author: Kittengarten
 commands:

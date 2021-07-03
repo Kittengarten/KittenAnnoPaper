@@ -6,23 +6,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import static org.bukkit.ChatColor.*;
 
-public final class KittenAnno extends JavaPlugin implements Listener {
+public class KittenAnno extends JavaPlugin implements Listener {
+    public static FileConfiguration config;
 
-    private void annoBroadcast(String annoString) {
-        Bukkit.broadcastMessage(annoString);
+    public KittenAnno() {
+        config = getConfig();
     }
 
-    private String getAnnoBroadcast() {
+    public String getAnnoBroadcast() {
         long annoTick = Bukkit.getWorlds().get(0).getGameTime();
         long annoDay = 1 + annoTick / 24000;
         AnnoCompute annoCompute_ = new AnnoCompute();
-        return annoCompute_.main(annoDay);
+        return annoCompute_.output(annoDay);
     }
 
     @Override
@@ -38,10 +40,12 @@ public final class KittenAnno extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                annoBroadcast(getAnnoBroadcast());
+                Bukkit.broadcastMessage(getAnnoBroadcast());
+                long annoTick = Bukkit.getWorlds().get(0).getGameTime();
+                long annoDay = 1 + annoTick / 24000;
+                new Reward().giveReward(annoDay);
             }
         }.runTaskTimer(this, 100L, 24000L);
-
     }
 
     @Override

@@ -1,1 +1,160 @@
 welcome_messages: 欢迎来到幼喵园！
+reward:
+  month0:
+    name: 下界之星
+    id: NETHER_STAR
+    quantity: 1
+    weight: 0
+  month1:
+    name: 雪块
+    id: SNOW_BLOCK
+    quantity: 64
+    weight: 1
+  month2:
+    name: 海洋之心
+    id: HEART_OF_THE_SEA
+    quantity: 1
+    weight: 2
+  month3:
+    name: 龙首
+    id: DRAGON_HEAD
+    quantity: 1
+    weight: 3
+  month4:
+    name: 哭泣的黑曜石
+    id: CRYING_OBSIDIAN
+    quantity: 1
+    weight: 4
+  month5:
+    name: 蓝冰
+    id: BLUE_ICE
+    quantity: 64
+    weight: 9
+  month6:
+    name: 绿宝石矿石
+    id: EMERALD_ORE
+    quantity: 64
+    weight: 10
+  month7:
+    name: 海龟壳
+    id: TURTLE_HELMET
+    quantity: 1
+    weight: 11
+  month8:
+    name: 鹦鹉螺壳
+    id: NAUTILUS_SHELL
+    quantity: 4
+    weight: 16
+  month9:
+    name: 凋零玫瑰
+    id: WITHER_ROSE
+    quantity: 1
+    weight: 18
+  month10:
+    name: 海晶灯
+    id: SEA_LANTERN
+    quantity: 16
+    weight: 20
+  month11:
+    name: 随机音乐唱片
+    ids:
+      id1: MUSIC_DISC_13
+      id2: MUSIC_DISC_CAT
+      id3: MUSIC_DISC_BLOCKS
+      id4: MUSIC_DISC_CHIRP
+      id5: MUSIC_DISC_FAR
+      id6: MUSIC_DISC_MALL
+      id7: MUSIC_DISC_MELLOHI
+      id8: MUSIC_DISC_STAL
+      id9: MUSIC_DISC_STRAD
+      id10: MUSIC_DISC_WARD
+      id11: MUSIC_DISC_11
+      id12: MUSIC_DISC_WAIT
+      id13: MUSIC_DISC_PIGSTEP
+    quantity: 1
+    weight: 22
+  month12:
+    name: 潜影壳
+    id: SHULKER_SHELL
+    quantity: 2
+    weight: 27
+  month13:
+    name: 三叉戟
+    id: TRIDENT
+    quantity: 1
+    weight: 37
+  month14:
+    name: 不死图腾
+    id: TOTEM_OF_UNDYING
+    quantity: 1
+    weight: 42
+  month15:
+    name: 盛开的杜鹃花丛
+    id: FLOWERING_AZALEA
+    quantity: 1
+    weight: 47
+  month16:
+    name: 附魔金苹果
+    id: ENCHANTED_GOLDEN_APPLE
+    quantity: 1
+    weight: 48
+  month17:
+    name: 黏液块
+    id: SLIME_BLOCK
+    quantity: 16
+    weight: 58
+  month18:
+    name: 黏土块
+    id: CLAY
+    quantity: 16
+    weight: 60
+  month19:
+    name: TNT
+    id: TNT
+    quantity: 4
+    weight: 65
+  month20:
+    name: 海绵
+    id: SPONGE
+    quantity: 4
+    weight: 66
+  month21:
+    name: 钟
+    id: BELL
+    quantity: 1
+    weight: 68
+  month22:
+    name: 命名牌
+    id: NAME_TAG
+    quantity: 4
+    weight: 69
+  month23:
+    name: 龙息
+    id: DRAGON_BREATH
+    quantity: 4
+    weight: 71
+  month24:
+    name: 鞘翅
+    id: ELYTRA
+    quantity: 1
+    weight: 81
+  month25:
+    name: 远古残骸
+    id: ANCIENT_DEBRIS
+    quantity: 4
+    weight: 83
+  month26:
+    name: 钻石矿石
+    id: DIAMOND_ORE
+    quantity: 8
+    weight: 88
+  month27:
+    name: 附魔书（经验修补）
+    id: ENCHANTED_BOOK
+    quantity: 1
+    weight: 90
+
+
+
+
+

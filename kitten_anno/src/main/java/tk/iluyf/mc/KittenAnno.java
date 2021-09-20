@@ -45,17 +45,10 @@ public class KittenAnno extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (tick < 100) {
-                    newDay = true;
-                }
-                if (newDay == true & did == false) {
+                long annoDay_ = 1 + annoTick / 24000;
+                if (annoDay_ > annoDay) {
                     Bukkit.broadcastMessage(getAnnoBroadcast());
                     new Reward().giveReward(annoDay);
-                    newDay = false;
-                    did = true;
-                    if (tick > 500) {
-                        Bukkit.broadcastMessage("严重错误：自动播报尝试5次失败。可能是由于服务器过于卡顿，或插件本身Bug。");
-                    }
                 }
             }
         }.runTaskTimer(this, 100L, 100L);

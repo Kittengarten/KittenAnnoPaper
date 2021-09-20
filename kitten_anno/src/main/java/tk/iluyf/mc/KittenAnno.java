@@ -15,14 +15,19 @@ import static org.bukkit.ChatColor.*;
 
 public class KittenAnno extends JavaPlugin implements Listener {
     public static FileConfiguration config;
+    public static short tick;
+    public static long annoTick, annoDay;
+    public static boolean did = false;
+    public static boolean newDay = false;
 
     public KittenAnno() {
         config = getConfig();
     }
 
     public String getAnnoBroadcast() {
-        long annoTick = Bukkit.getWorlds().get(0).getGameTime();
-        long annoDay = 1 + annoTick / 24000;
+        annoTick = Bukkit.getWorlds().get(0).getGameTime();
+        annoDay = 1 + annoTick / 24000;
+        KittenAnno.tick = (short) (annoTick % 24000);
         AnnoCompute annoCompute_ = new AnnoCompute();
         return annoCompute_.output(annoDay);
     }
@@ -40,12 +45,20 @@ public class KittenAnno extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Bukkit.broadcastMessage(getAnnoBroadcast());
-                long annoTick = Bukkit.getWorlds().get(0).getGameTime();
-                long annoDay = 1 + annoTick / 24000;
-                new Reward().giveReward(annoDay);
+                if (tick < 100) {
+                    newDay = true;
+                }
+                if (newDay == true & did == false) {
+                    Bukkit.broadcastMessage(getAnnoBroadcast());
+                    new Reward().giveReward(annoDay);
+                    newDay = false;
+                    did = true;
+                    if (tick > 500) {
+                        Bukkit.broadcastMessage("严重错误：自动播报尝试5次失败。可能是由于服务器过于卡顿，或插件本身Bug。");
+                    }
+                }
             }
-        }.runTaskTimer(this, 100L, 24000L);
+        }.runTaskTimer(this, 100L, 100L);
     }
 
     @Override

@@ -119,9 +119,9 @@ reward:
     quantity: 4
     weight: 66
   month21:
-    name: 钟
-    id: BELL
-    quantity: 1
+    name: 幸运药水
+    id: POTION
+    quantity: 3
     weight: 68
   month22:
     name: 命名牌

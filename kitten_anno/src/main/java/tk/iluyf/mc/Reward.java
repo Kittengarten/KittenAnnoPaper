@@ -7,10 +7,13 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Bukkit;
+import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionData;
 
 import static org.bukkit.ChatColor.*;
 
@@ -62,23 +65,28 @@ public class Reward {
             return itemReward;
         } else {
             ItemStack itemReward = new ItemStack(Material.getMaterial(monthReward[1]), Integer.valueOf(monthReward[2]));
-            return mending(monthReward[1], itemReward);
+            return mendingOrLuck(monthReward[1], itemReward);
         }
     }
 
-    private ItemStack mending(String id, ItemStack itemReward) {
+    private ItemStack mendingOrLuck(String id, ItemStack itemReward) {
         if (id.equals("ENCHANTED_BOOK")) {
             Enchantment enchantment_ = new EnchantmentWrapper("mending");
             EnchantmentStorageMeta enchantmentStorageMeta_ = (EnchantmentStorageMeta) itemReward.getItemMeta();
             enchantmentStorageMeta_.addStoredEnchant(enchantment_, enchantment_.getMaxLevel(), false);
             itemReward.setItemMeta(enchantmentStorageMeta_);
+        } else if (id.equals("POTION")) {
+            PotionData potionData_ = new PotionData(PotionType.LUCK);
+            PotionMeta potionMeta_ = (PotionMeta) itemReward.getItemMeta();
+            potionMeta_.setBasePotionData(potionData_);
+            itemReward.setItemMeta(potionMeta_);
         }
         return itemReward;
     }
 
     private ItemStack music_disc(short quantity, long seed) {
         int randomNumber = new Random(seed).nextInt(13);
-        String id = KittenAnno.config.getString("reward.month11.ids.id" + String.valueOf(randomNumber));
+        String id = KittenAnno.config.getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
         ItemStack itemReward = new ItemStack(Material.getMaterial(id), Integer.valueOf(quantity));
         return itemReward;
     }

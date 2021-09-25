@@ -45,6 +45,7 @@ public class KittenAnno extends JavaPlugin implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                annoTick = Bukkit.getWorlds().get(0).getGameTime();
                 long annoDay_ = 1 + annoTick / 24000;
                 if (annoDay_ > annoDay) {
                     Bukkit.broadcastMessage(getAnnoBroadcast());

@@ -70,8 +70,8 @@ public class AnnoCompute {
 
     final long[] dayToMonth(long day) {
         long monthDayNumber[] = new long[2];
-        long monthCycleCount = day / monthCycleDayCount;
-        short netDay = (short) (day % monthCycleDayCount);
+        long monthCycleCount = (day - 1) / monthCycleDayCount;
+        short netDay = (short) ((day - 1) % monthCycleDayCount + 1);
         short monthCycle_MonthCount_Circulate = 1;
         while (netDay >= monthCycle_FirstdayDay[monthCycle_MonthCount_Circulate + 1]) {
             ++monthCycle_MonthCount_Circulate;
@@ -86,8 +86,8 @@ public class AnnoCompute {
 
     private final long[] monthToYear(long month) {
         long yearMonthNumber[] = new long[2];
-        long yearCycleCount = month / yearCycleMonthCount;
-        short netMonth = (short) (month % yearCycleMonthCount);
+        long yearCycleCount = (month - 1) / yearCycleMonthCount;
+        short netMonth = (short) ((month - 1) % yearCycleMonthCount + 1);
         short yearCycle_YearCount_Circulate = 1;
         while (netMonth >= yearCycle_FirstmonthMonth[yearCycle_YearCount_Circulate + 1]) {
             ++yearCycle_YearCount_Circulate;

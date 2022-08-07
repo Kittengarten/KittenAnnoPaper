@@ -1,11 +1,11 @@
-name: Kitten_Anno
-main: tk.iluyf.mc.KittenAnno
-version: 2.1
-api-version: 1.17
+name: KittenAnnoPaper
+main: com.iluyf.mc.Anno
+version: 3.0
+api-version: 1.19
 author: Kittengarten
 commands:
   kittenanno:
-    description: Get today's date. (World_Tree_Anno)
+    description: Get today's date. (WorldTreeAnno)
     aliases: [anno]
 permissions:
   kittenanno.*:
@@ -13,5 +13,5 @@ permissions:
     children:
       kittenanno.anno: true
   kittenanno.anno:
-    description: Allows you to use World_Tree_Anno.
+    description: Allows you to use WorldTreeAnno.
     default: true

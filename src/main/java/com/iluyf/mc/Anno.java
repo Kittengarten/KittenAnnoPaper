@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -18,22 +17,17 @@ import java.text.SimpleDateFormat;
 import static org.bukkit.ChatColor.*;
 
 public class Anno extends JavaPlugin implements Listener {
-    public static FileConfiguration config;
     public static long day;
 
-    public Anno() {
-        config = getConfig();
-    }
-
     // 获取天数戳
-    public long getDay() throws ParseException{
+    public long getDay() throws ParseException {
         int secondsPerDay = 85653;
         String kittenDay = "2017年04月25日";
-        long unix = System.currentTimeMillis() / 1000L-8*3600; // 去除时区影响
+        long unix = System.currentTimeMillis() / 1000L - 8 * 3600; // 排除时区影响（硬编码，仅适用于 UTC+8）
         DateFormat df = new SimpleDateFormat("yyyy年MM月dd日");
         long epoch = df.parse(kittenDay).getTime() / 1000L; // 初始时间戳
         long wtaUnix = 72 * (unix - epoch) + System.currentTimeMillis() % 1000 * 72 / 1000;
-        return wtaUnix / secondsPerDay; 
+        return wtaUnix / secondsPerDay;
     }
 
     public String getAnnoBroadcast() throws ParseException {
@@ -49,7 +43,7 @@ public class Anno extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        Bukkit.getPluginCommand("kittenanno").setExecutor(new AnnoCommand());
+        this.getCommand("kittenanno").setExecutor(new AnnoCommand());
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
         getLogger().info(GREEN + "世界树纪元开始运行。");
         new BukkitRunnable() {
@@ -79,8 +73,8 @@ public class Anno extends JavaPlugin implements Listener {
     public class AnnoCommand implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            if (sender.hasPermission("kittenanno.anno")) {
-                if (cmd.getName().equalsIgnoreCase("anno") || cmd.getName().equalsIgnoreCase("kittenanno")) {
+            if (cmd.getName().equalsIgnoreCase("kittenanno") || cmd.getName().equalsIgnoreCase("anno")) {
+                if (sender.hasPermission("kittenanno.anno")) {
                     try {
                         sender.sendMessage(getAnnoBroadcast());
                     } catch (ParseException e) {

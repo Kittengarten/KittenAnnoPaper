@@ -3,116 +3,119 @@ package com.iluyf.mc;
 import static org.bukkit.ChatColor.*;
 
 public class Compute {
-    final static short commonYearMonthCount = 27;
-    final static short commonMonthDayCount = 20;
-    final static short cycleLeapYearCount = 10;
-    final static short cycleGreaterMonthCount = 3;
-    final static short yearCycle = 29;
-    final static short monthCycle = 10;
-    final static short yearCycleMonthCount = yearCycle * commonYearMonthCount + cycleLeapYearCount;
-    final static short monthCycleDayCount = monthCycle * commonMonthDayCount + cycleGreaterMonthCount;
-    short monthCycle_FirstdayDay[] = new short[monthCycle + 1];
-    short yearCycle_FirstmonthMonth[] = new short[yearCycle + 1];
+    final static short commonYearMonthCount = 27; // 平年的月数
+    final static short commonMonthDayCount = 20; // 小月的天数
+    final static short yearCycle = 29; // 闰年周期的年数
+    final static short monthCycle = 10; // 每周期的闰年数
+    final static short cycleLeapYearCount = 10; // 每周期的闰年数
+    final static short cycleGreaterMonthCount = 3; // 每周期的大月数
+    final static short yearCycleMonthCount = yearCycle * commonYearMonthCount + cycleLeapYearCount; // 闰年周期的月数
+    final static short monthCycleDayCount = monthCycle * commonMonthDayCount + cycleGreaterMonthCount; // 大月周期的天数
+    short yearCycleFirstmonthMonth[] = new short[yearCycle]; // 闰年周期中，每年的首月所处的月数戳
+    short monthCycleFirstdayDay[] = new short[monthCycle]; // 大月周期中，每月的首日所处的天数戳
+
+    class YearMonth {
+        long year, month;
+    }
+
+    class MonthDay {
+        long month, day;
+    }
 
     public String output(long annoDay) {
         return annoToString(annoDay);
     }
 
+    // 计算出闰年和大月
     public Compute() {
-        monthCycle_FirstdayDayCompute();
-        yearCycle_FirstmonthMonthCompute();
+        yearCycleFirstmonthMonthCompute();
+        monthCycleFirstdayDayCompute();
     }
 
-    private final void monthCycle_FirstdayDayCompute() {
-        monthCycle_FirstdayDay[1] = 1;
-        for (short monthCycle_Month_Circulate = 2; monthCycle_Month_Circulate <= monthCycle; ++monthCycle_Month_Circulate) {
-            if (isCommonMonth(monthCycle_Month_Circulate - 1)) {
-                monthCycle_FirstdayDay[monthCycle_Month_Circulate] = (short) (monthCycle_FirstdayDay[monthCycle_Month_Circulate
-                        - 1] + commonMonthDayCount);
-            } else {
-                monthCycle_FirstdayDay[monthCycle_Month_Circulate] = (short) (monthCycle_FirstdayDay[monthCycle_Month_Circulate
-                        - 1] + commonMonthDayCount + 1);
-            }
+    // 计算闰年
+    private final void yearCycleFirstmonthMonthCompute() {
+        yearCycleFirstmonthMonth[0] = 0;
+        for (short i = 1; i < yearCycle; ++i) {
+            if (isCommonYear(i - 1))
+                yearCycleFirstmonthMonth[i] = (short) (yearCycleFirstmonthMonth[i - 1] + commonYearMonthCount);
+            else
+                yearCycleFirstmonthMonth[i] = (short) (yearCycleFirstmonthMonth[i - 1] + commonYearMonthCount + 1);
         }
     }
 
-    private final void yearCycle_FirstmonthMonthCompute() {
-        yearCycle_FirstmonthMonth[1] = 1;
-        for (short yearCycle_Year_Circulate = 2; yearCycle_Year_Circulate <= yearCycle; ++yearCycle_Year_Circulate) {
-            if (isCommonYear(yearCycle_Year_Circulate - 1)) {
-                yearCycle_FirstmonthMonth[yearCycle_Year_Circulate] = (short) (yearCycle_FirstmonthMonth[yearCycle_Year_Circulate
-                        - 1] + commonYearMonthCount);
-            } else {
-                yearCycle_FirstmonthMonth[yearCycle_Year_Circulate] = (short) (yearCycle_FirstmonthMonth[yearCycle_Year_Circulate
-                        - 1] + commonYearMonthCount + 1);
-            }
-        }
-    }
-
+    // 判断是否平年
     private final boolean isCommonYear(long year) {
         short netYear = (short) (year % yearCycle);
-        if (netYear == 2 || netYear == 5 || netYear == 8 || netYear == 11 || netYear == 14 || netYear == 16
-                || netYear == 19 || netYear == 22 || netYear == 25 || netYear == 28) {
-            return false;
-        } else {
-            return true;
+        final short years[] = { 1, 4, 7, 10, 13, 15, 18, 21, 24, 27 };
+        for (short v : years) {
+            if (netYear == v)
+                return false;
+        }
+        return true;
+    }
+
+    // 计算大月
+    private final void monthCycleFirstdayDayCompute() {
+        monthCycleFirstdayDay[0] = 0;
+        for (short i = 1; i < monthCycle; ++i) {
+            if (isCommonMonth(i - 1))
+                monthCycleFirstdayDay[i] = (short) (monthCycleFirstdayDay[i - 1] + commonMonthDayCount);
+            else
+                monthCycleFirstdayDay[i] = (short) (monthCycleFirstdayDay[i - 1] + commonMonthDayCount + 1);
         }
     }
 
+    // 判断是否小月
     private final boolean isCommonMonth(long month) {
         short netMonth = (short) (month % monthCycle);
-        if (netMonth == 2 || netMonth == 5 || netMonth == 9) {
-            return false;
-        } else {
-            return true;
+        final short months[] = { 1, 4, 8 };
+        for (short v : months) {
+            if (netMonth == v)
+                return false;
         }
+        return true;
     }
 
-    final long[] dayToMonth(long day) {
-        long monthDayNumber[] = new long[2];
-        long monthCycleCount = (day - 1) / monthCycleDayCount;
-        short netDay = (short) ((day - 1) % monthCycleDayCount + 1);
-        short monthCycle_MonthCount_Circulate = 1;
-        while (netDay >= monthCycle_FirstdayDay[monthCycle_MonthCount_Circulate + 1]) {
-            ++monthCycle_MonthCount_Circulate;
-            if (monthCycle_MonthCount_Circulate >= monthCycle) {
-                break;
-            }
-        }
-        monthDayNumber[1] = netDay - monthCycle_FirstdayDay[monthCycle_MonthCount_Circulate] + 1;
-        monthDayNumber[0] = monthCycleCount * monthCycle + monthCycle_MonthCount_Circulate;
-        return monthDayNumber;
-    }
-
-    private final long[] monthToYear(long month) {
-        long yearMonthNumber[] = new long[2];
-        long yearCycleCount = (month - 1) / yearCycleMonthCount;
-        short netMonth = (short) ((month - 1) % yearCycleMonthCount + 1);
-        short yearCycle_YearCount_Circulate = 1;
-        while (netMonth >= yearCycle_FirstmonthMonth[yearCycle_YearCount_Circulate + 1]) {
-            ++yearCycle_YearCount_Circulate;
-            if (yearCycle_YearCount_Circulate >= yearCycle) {
-                break;
-            }
-        }
-        yearMonthNumber[1] = netMonth - yearCycle_FirstmonthMonth[yearCycle_YearCount_Circulate] + 1;
-        yearMonthNumber[0] = yearCycleCount * yearCycle + yearCycle_YearCount_Circulate;
-        if (!isCommonYear(yearMonthNumber[0])) {
-            yearMonthNumber[1] -= 1;
+    // 输出月数戳对应的年数戳、月份
+    private final YearMonth toYearMonth(long month) {
+        YearMonth yearMonthNumber = new YearMonth();
+        long yearCycleCount = month / yearCycleMonthCount;
+        short netMonth = (short) (month % yearCycleMonthCount);
+        short i = 0;
+        while (netMonth >= yearCycleFirstmonthMonth[i] && i < yearCycle)
+            ++i;
+        yearMonthNumber.year = yearCycleCount * yearCycle + i - 1;
+        yearMonthNumber.month = netMonth - yearCycleFirstmonthMonth[i - 1] + 1;
+        // 如果是闰年，月份序号整体减少 1
+        if (!isCommonYear(yearMonthNumber.year)) {
+            yearMonthNumber.month--;
         }
         return yearMonthNumber;
     }
 
+    // 输出天数戳对应的月数戳、日期
+    final MonthDay toMonthDay(long day) {
+        MonthDay monthDayNumber = new MonthDay();
+        long monthCycleCount = day / monthCycleDayCount;
+        short netDay = (short) (day % monthCycleDayCount);
+        short i = 1;
+        while (netDay >= monthCycleFirstdayDay[i] && i < monthCycle)
+            ++i;
+        monthDayNumber.month = monthCycleCount * monthCycle + i - 1;
+        monthDayNumber.day = netDay - monthCycleFirstdayDay[i - 1] + 1;
+        return monthDayNumber;
+    }
+
     private String annoToString(long annoDay) {
-        long monthDay[] = new long[2];
-        monthDay = dayToMonth(annoDay);
-        short dayNumber = (short) monthDay[1];
-        long yearMonth[] = new long[2];
-        yearMonth = monthToYear(monthDay[0]);
-        short monthNumber = (short) yearMonth[1];
-        long yearNumber = yearMonth[0];
+        MonthDay monthDay = new MonthDay();
+        monthDay = toMonthDay(annoDay);
+        short dayNumber = (short) monthDay.day;
+        YearMonth yearMonth = new YearMonth();
+        yearMonth = toYearMonth(monthDay.month);
+        short monthNumber = (short) yearMonth.month;
+        long yearNumber = yearMonth.year;
         if (yearNumber > 0 && monthNumber >= 0 && dayNumber > 0) {
-            return BOLD + yearConvert(yearNumber) + "年" + RESET + monthConvert(monthNumber) + RESET
+            return BOLD + yearConvert(yearNumber) + RESET + monthConvert(monthNumber) + RESET
                     + dayConvert((short) dayNumber);
         } else {
             return "";
@@ -120,13 +123,13 @@ public class Compute {
     }
 
     public long[] annoToValue(long annoDay) {
-        long monthDay[] = new long[2];
-        monthDay = dayToMonth(annoDay);
-        short dayNumber = (short) monthDay[1];
-        long yearMonth[] = new long[2];
-        yearMonth = monthToYear(monthDay[0]);
-        short monthNumber = (short) yearMonth[1];
-        long yearNumber = yearMonth[0];
+        MonthDay monthDay = new MonthDay();
+        monthDay = toMonthDay(annoDay);
+        short dayNumber = (short) monthDay.day;
+        YearMonth yearMonth = new YearMonth();
+        yearMonth = toYearMonth(monthDay.month);
+        short monthNumber = (short) yearMonth.month;
+        long yearNumber = yearMonth.year;
         if (yearNumber > 0 && monthNumber >= 0 && dayNumber > 0) {
             long[] returnValue = { yearNumber, monthNumber, dayNumber };
             return returnValue;
@@ -135,11 +138,6 @@ public class Compute {
             return returnValue;
         }
     }
-
-    public static void main(String[] args) {
-        Compute meow = new Compute();
-        System.out.println(meow.annoToString(170425/* 可以是任意天数 */));
-    }// 测试用
 
     private final String numberConvert(long number) {
         switch ((short) number) {
@@ -179,9 +177,9 @@ public class Compute {
             returnValue = yearConvertMemory[Circulate][1] + returnValue;
         }
         if (yearNumber == 1L) {
-            return "世界树纪元元";
+            return "世界树纪元元年";
         }
-        return "世界树纪元" + returnValue;
+        return "世界树纪元" + returnValue + "年";
     }
 
     private final String monthConvert(short monthNumber) {

@@ -8,6 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -18,91 +19,102 @@ import org.bukkit.potion.PotionData;
 
 import static org.bukkit.ChatColor.*;
 
-public class Reward {
+public class Reward extends JavaPlugin {
+    class MonthReward {
+        String name, id, quantity;
+    }
+
     public ItemStack randomReward(long seed, String playerName, long annoDay) {
-        String monthReward[] = new String[3];
-        short month_Cycle;
+        MonthReward monthReward = new MonthReward();
+        short monthCycle;
         int randomNumber = new Random(seed - annoDay).nextInt(100);
-        for (month_Cycle = 0; month_Cycle <= Compute.commonYearMonthCount; ++month_Cycle) {
+        for (monthCycle = 0; monthCycle <= Compute.commonYearMonthCount; ++monthCycle) {
             if (randomNumber < Short
-                    .valueOf(Anno.config.getString("reward.month" + String.valueOf(month_Cycle) + ".weight"))) {
-                monthReward[0] = Anno.config
-                        .getString("reward.month" + String.valueOf(month_Cycle - 1) + ".name");
-                monthReward[1] = Anno.config.getString("reward.month" + String.valueOf(month_Cycle - 1) + ".id");
-                monthReward[2] = Anno.config
-                        .getString("reward.month" + String.valueOf(month_Cycle - 1) + ".quantity");
+                    .valueOf(getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".weight"))) {
+                monthReward.name = getConfig().getString("reward.month" + String.valueOf(monthCycle - 1) + ".name");
+                monthReward.id = getConfig().getString("reward.month" + String.valueOf(monthCycle - 1) + ".id");
+                monthReward.quantity = getConfig()
+                        .getString("reward.month" + String.valueOf(monthCycle - 1) + ".quantity");
                 break;
             }
-            if (month_Cycle == Compute.commonYearMonthCount) {
-                monthReward[0] = Anno.config.getString("reward.month" + String.valueOf(month_Cycle) + ".name");
-                monthReward[1] = Anno.config.getString("reward.month" + String.valueOf(month_Cycle) + ".id");
-                monthReward[2] = Anno.config
-                        .getString("reward.month" + String.valueOf(month_Cycle) + ".quantity");
+            if (monthCycle == Compute.commonYearMonthCount) {
+                monthReward.name = getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".name");
+                monthReward.id = getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".id");
+                monthReward.quantity = getConfig()
+                        .getString("reward.month" + String.valueOf(monthCycle) + ".quantity");
             }
         }
-        Bukkit.getServer().broadcast(Component.text(BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET + BOLD
-                + "月中随机奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward[0] + "]" + RESET + GREEN + monthReward[2]
-                + RESET + "个"));
+        Bukkit.getServer()
+                .broadcast(Component.text(BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET + BOLD
+                        + "月中随机奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward.name + "]" + RESET + GREEN
+                        + monthReward.quantity + RESET + "个"));
         return rewardOutput(monthReward, seed, annoDay);
     }
 
     public ItemStack normalReward(long seed, String playerName, long annoDay) {
-        String monthReward[] = new String[3];
+        MonthReward monthReward = new MonthReward();
         short normalNumber = (short) new Compute().annoToValue(annoDay)[1];
-        for (short month_Cycle = 0; month_Cycle <= Compute.commonYearMonthCount; ++month_Cycle) {
-            monthReward[0] = Anno.config.getString("reward.month" + String.valueOf(normalNumber) + ".name");
-            monthReward[1] = Anno.config.getString("reward.month" + String.valueOf(normalNumber) + ".id");
-            monthReward[2] = Anno.config.getString("reward.month" + String.valueOf(normalNumber) + ".quantity");
+        for (short monthCycle = 0; monthCycle <= Compute.commonYearMonthCount; ++monthCycle) {
+            monthReward.name = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".name");
+            monthReward.id = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".id");
+            monthReward.quantity = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".quantity");
         }
-        Bukkit.getServer().broadcast(Component.text((BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET + BOLD
-                + "月初固定奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward[0] + "]" + RESET + GREEN + monthReward[2]
-                + RESET + "个")));
+        Bukkit.getServer()
+                .broadcast(Component.text((BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET
+                        + BOLD + "月初固定奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward.name + "]" + RESET + GREEN
+                        + monthReward.quantity + RESET + "个")));
         return rewardOutput(monthReward, seed, annoDay);
     }
 
-    private ItemStack rewardOutput(String monthReward[], long seed, Long annoDay) {
-        if (monthReward[0].equals("随机音乐唱片")) {
-            ItemStack itemReward = music_disc(Short.valueOf(monthReward[2]), seed - annoDay);
+    private ItemStack rewardOutput(MonthReward monthReward, long seed, Long annoDay) {
+        if (monthReward.name.equals("随机音乐唱片")) {
+            ItemStack itemReward = musicDisc(Short.valueOf(monthReward.quantity), seed - annoDay);
             return itemReward;
         } else {
-            ItemStack itemReward = new ItemStack(Material.getMaterial(monthReward[1]), Integer.valueOf(monthReward[2]));
-            return mendingOrLuck(monthReward[1], itemReward);
+            ItemStack itemReward = new ItemStack(Material.getMaterial(monthReward.id),
+                    Integer.valueOf(monthReward.quantity));
+            return mendingOrLuck(monthReward, itemReward);
         }
     }
 
-    private ItemStack mendingOrLuck(String id, ItemStack itemReward) {
-        if (id.equals("ENCHANTED_BOOK")) {
-            Enchantment enchantment_ = new EnchantmentWrapper("mending");
-            EnchantmentStorageMeta enchantmentStorageMeta_ = (EnchantmentStorageMeta) itemReward.getItemMeta();
-            enchantmentStorageMeta_.addStoredEnchant(enchantment_, enchantment_.getMaxLevel(), false);
-            itemReward.setItemMeta(enchantmentStorageMeta_);
-        } else if (id.equals("POTION")) {
-            PotionData potionData_ = new PotionData(PotionType.LUCK);
-            PotionMeta potionMeta_ = (PotionMeta) itemReward.getItemMeta();
-            potionMeta_.setBasePotionData(potionData_);
-            itemReward.setItemMeta(potionMeta_);
+    private ItemStack mendingOrLuck(MonthReward monthReward, ItemStack itemReward) {
+        Enchantment enchantment;
+        if (monthReward.id.equalsIgnoreCase("ENCHANTED_BOOK")) {
+            if (monthReward.name.equals("附魔书（迅捷潜行）")) {
+                enchantment = new EnchantmentWrapper("swift_sneak");
+            } else {
+                enchantment = new EnchantmentWrapper("mending");
+            }
+            EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) itemReward.getItemMeta();
+            enchantmentStorageMeta.addStoredEnchant(enchantment, enchantment.getMaxLevel(), false);
+            itemReward.setItemMeta(enchantmentStorageMeta);
+        } else if (monthReward.id.equalsIgnoreCase("potion")) {
+            PotionData potionData = new PotionData(PotionType.LUCK);
+            PotionMeta potionMeta = (PotionMeta) itemReward.getItemMeta();
+            potionMeta.setBasePotionData(potionData);
+            itemReward.setItemMeta(potionMeta);
         }
         return itemReward;
     }
 
-    private ItemStack music_disc(short quantity, long seed) {
-        int randomNumber = new Random(seed).nextInt(13);
-        String id = Anno.config.getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
+    private ItemStack musicDisc(short quantity, long seed) {
+        int randomNumber = new Random(seed).nextInt(15);
+        String id = getConfig().getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
         ItemStack itemReward = new ItemStack(Material.getMaterial(id), Integer.valueOf(quantity));
         return itemReward;
     }
 
     public void giveReward(long annoDay) {
         Collection<? extends Player> onlinePlayerList = Bukkit.getOnlinePlayers();
-        for (Iterator<? extends Player> iterator_ = onlinePlayerList.iterator(); iterator_.hasNext();) {
-            Player player_ = iterator_.next();
-            PlayerInventory inventory_ = player_.getInventory();
+        for (Iterator<? extends Player> iterator = onlinePlayerList.iterator(); iterator.hasNext();) {
+            Player player = iterator.next();
+            PlayerInventory inventory = player.getInventory();
             switch ((short) new Compute().annoToValue(annoDay)[2]) {
                 case 1:
-                    inventory_.addItem(normalReward(player_.getName().hashCode(), player_.getName(), annoDay));
+                    inventory.addItem(normalReward(player.getName().hashCode(), player.getName(), annoDay));
                     break;
                 case 11:
-                    inventory_.addItem(randomReward(player_.getName().hashCode(), player_.getName(), annoDay));
+                    inventory.addItem(randomReward(player.getName().hashCode(), player.getName(), annoDay));
                     break;
             }
         }

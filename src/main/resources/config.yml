@@ -2,155 +2,157 @@ welcome_messages: 欢迎来到幼喵园！
 reward:
   month0:
     name: 下界之星
-    id: NETHER_STAR
+    id: nether_star
     quantity: 1
     weight: 0
   month1:
     name: 雪块
-    id: SNOW_BLOCK
+    id: snow_block
     quantity: 64
     weight: 1
   month2:
     name: 海洋之心
-    id: HEART_OF_THE_SEA
+    id: heart_of_the_sea
     quantity: 1
     weight: 2
   month3:
-    name: 龙首
-    id: DRAGON_HEAD
+    name: 附魔书（迅捷潜行）
+    id: enchanted_book
     quantity: 1
     weight: 3
   month4:
     name: 哭泣的黑曜石
-    id: CRYING_OBSIDIAN
+    id: crying_obsidian
     quantity: 1
     weight: 4
   month5:
     name: 蓝冰
-    id: BLUE_ICE
+    id: blue_ice
     quantity: 64
     weight: 9
   month6:
     name: 绿宝石矿石
-    id: EMERALD_ORE
+    id: emerald_ore
     quantity: 64
     weight: 10
   month7:
     name: 海龟壳
-    id: TURTLE_HELMET
+    id: turtle_helmet
     quantity: 1
     weight: 11
   month8:
     name: 鹦鹉螺壳
-    id: NAUTILUS_SHELL
+    id: nautilus_shell
     quantity: 4
     weight: 16
   month9:
     name: 凋零玫瑰
-    id: WITHER_ROSE
+    id: wither_rose
     quantity: 1
     weight: 18
   month10:
     name: 海晶灯
-    id: SEA_LANTERN
+    id: sea_lantern
     quantity: 16
     weight: 20
   month11:
     name: 随机音乐唱片
     ids:
-      id1: MUSIC_DISC_13
-      id2: MUSIC_DISC_CAT
-      id3: MUSIC_DISC_BLOCKS
-      id4: MUSIC_DISC_CHIRP
-      id5: MUSIC_DISC_FAR
-      id6: MUSIC_DISC_MALL
-      id7: MUSIC_DISC_MELLOHI
-      id8: MUSIC_DISC_STAL
-      id9: MUSIC_DISC_STRAD
-      id10: MUSIC_DISC_WARD
-      id11: MUSIC_DISC_11
-      id12: MUSIC_DISC_WAIT
-      id13: MUSIC_DISC_PIGSTEP
+      id1: music_disc_13
+      id2: music_disc_cat
+      id3: music_disc_blocks
+      id4: music_disc_chirp
+      id5: music_disc_far
+      id6: music_disc_mall
+      id7: music_disc_mellohi
+      id8: music_disc_stal
+      id9: music_disc_strad
+      id10: music_disc_ward
+      id11: music_disc_11
+      id12: music_disc_watt
+      id13: music_disc_pigstep
+      id14: music_disc_otherside
+      id15: music_disc_5
     quantity: 1
     weight: 22
   month12:
     name: 潜影壳
-    id: SHULKER_SHELL
+    id: shulker_shell
     quantity: 2
     weight: 27
   month13:
     name: 三叉戟
-    id: TRIDENT
+    id: trident
     quantity: 1
     weight: 37
   month14:
     name: 不死图腾
-    id: TOTEM_OF_UNDYING
+    id: totem_of_undying
     quantity: 1
     weight: 42
   month15:
-    name: 盛开的杜鹃花丛
-    id: FLOWERING_AZALEA
-    quantity: 1
+    name: 幸运药水
+    id: potion
+    quantity: 3
     weight: 47
   month16:
     name: 附魔金苹果
-    id: ENCHANTED_GOLDEN_APPLE
+    id: enchanted_golden_apple
     quantity: 1
     weight: 48
   month17:
     name: 黏液块
-    id: SLIME_BLOCK
+    id: slime_block
     quantity: 16
     weight: 58
   month18:
     name: 黏土块
-    id: CLAY
+    id: clay
     quantity: 16
     weight: 60
   month19:
     name: TNT
-    id: TNT
+    id: tnt
     quantity: 4
     weight: 65
   month20:
     name: 海绵
-    id: SPONGE
+    id: sponge
     quantity: 4
     weight: 66
   month21:
-    name: 幸运药水
-    id: POTION
-    quantity: 3
+    name: 回响碎片
+    id: echo_shard
+    quantity: 4
     weight: 68
   month22:
     name: 命名牌
-    id: NAME_TAG
+    id: name_tag
     quantity: 4
     weight: 69
   month23:
     name: 龙息
-    id: DRAGON_BREATH
+    id: dragon_breath
     quantity: 4
     weight: 71
   month24:
     name: 鞘翅
-    id: ELYTRA
+    id: elytra
     quantity: 1
     weight: 81
   month25:
     name: 远古残骸
-    id: ANCIENT_DEBRIS
+    id: ancient_debris
     quantity: 4
     weight: 83
   month26:
     name: 钻石矿石
-    id: DIAMOND_ORE
+    id: diamond_ore
     quantity: 8
     weight: 88
   month27:
     name: 附魔书（经验修补）
-    id: ENCHANTED_BOOK
+    id: enchanted_book
     quantity: 1
     weight: 90
 

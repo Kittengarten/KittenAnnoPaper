@@ -1,0 +1,20 @@
+name: KittenAnnoPaper
+main: com.iluyf.mc.Anno
+version: 3.0
+description: 用于 Paper 的世界树纪元插件
+api-version: 1.19
+author: Kittengarten
+website: https://github.com/Kittengarten/KittenAnnoPaper
+load: STARTUP
+commands:
+  kittenanno:
+    description: 查询世界树纪元。
+    aliases: [anno]
+permissions:
+  kittenanno.*:
+    description: 世界树纪元插件所有命令的权限。
+    children:
+      kittenanno.anno: true
+  kittenanno.anno:
+    description: 允许查询世界树纪元。
+    default: true

@@ -4,22 +4,28 @@ import static org.bukkit.ChatColor.*;
 
 public class Compute {
     final static short commonYearMonthCount = 27; // 平年的月数
-    final static short commonMonthDayCount = 20; // 小月的天数
-    final static short yearCycle = 29; // 闰年周期的年数
-    final static short monthCycle = 10; // 每周期的闰年数
-    final static short cycleLeapYearCount = 10; // 每周期的闰年数
-    final static short cycleGreaterMonthCount = 3; // 每周期的大月数
-    final static short yearCycleMonthCount = yearCycle * commonYearMonthCount + cycleLeapYearCount; // 闰年周期的月数
-    final static short monthCycleDayCount = monthCycle * commonMonthDayCount + cycleGreaterMonthCount; // 大月周期的天数
+    private final static short commonMonthDayCount = 20; // 小月的天数
+    private final static short yearCycle = 29; // 闰年周期的年数
+    private final static short monthCycle = 10; // 每周期的闰年数
+    private final static short cycleLeapYearCount = 10; // 每周期的闰年数
+    private final static short cycleGreaterMonthCount = 3; // 每周期的大月数
+    private final static short yearCycleMonthCount = yearCycle * commonYearMonthCount + cycleLeapYearCount; // 闰年周期的月数
+    private final static short monthCycleDayCount = monthCycle * commonMonthDayCount + cycleGreaterMonthCount; // 大月周期的天数
+    private final static String numberString = "〇一二三四五六七八九";
+    private final static String monthString = "寂雪海夜彗凉芷茸雨花梦音晴岚萝苏茜梨荷茶茉铃信瑶风叶霜奈";
+    private final static String dayString = "初十廿";
+
     short yearCycleFirstmonthMonth[] = new short[yearCycle]; // 闰年周期中，每年的首月所处的月数戳
     short monthCycleFirstdayDay[] = new short[monthCycle]; // 大月周期中，每月的首日所处的天数戳
 
     class YearMonth {
-        long year, month;
+        long year;
+        short month;
     }
 
     class MonthDay {
-        long month, day;
+        long month;
+        short day;
     }
 
     public String output(long annoDay) {
@@ -85,7 +91,7 @@ public class Compute {
         while (netMonth >= yearCycleFirstmonthMonth[i] && i < yearCycle)
             ++i;
         yearMonthNumber.year = yearCycleCount * yearCycle + i - 1;
-        yearMonthNumber.month = netMonth - yearCycleFirstmonthMonth[i - 1] + 1;
+        yearMonthNumber.month = (short) (netMonth - yearCycleFirstmonthMonth[i - 1] + 1);
         // 如果是闰年，月份序号整体减少 1
         if (!isCommonYear(yearMonthNumber.year)) {
             yearMonthNumber.month--;
@@ -102,7 +108,7 @@ public class Compute {
         while (netDay >= monthCycleFirstdayDay[i] && i < monthCycle)
             ++i;
         monthDayNumber.month = monthCycleCount * monthCycle + i - 1;
-        monthDayNumber.day = netDay - monthCycleFirstdayDay[i - 1] + 1;
+        monthDayNumber.day = (short) (netDay - monthCycleFirstdayDay[i - 1] + 1);
         return monthDayNumber;
     }
 
@@ -139,31 +145,9 @@ public class Compute {
         }
     }
 
-    private final String numberConvert(long number) {
-        switch ((short) number) {
-            case 0:
-                return "〇";
-            case 1:
-                return "一";
-            case 2:
-                return "二";
-            case 3:
-                return "三";
-            case 4:
-                return "四";
-            case 5:
-                return "五";
-            case 6:
-                return "六";
-            case 7:
-                return "七";
-            case 8:
-                return "八";
-            case 9:
-                return "九";
-            default:
-                return "";
-        }
+    // 只允许传入 0～9 的整数
+    private final String numberConvert(Short number) {
+        return String.valueOf(numberString.charAt(number));
     }
 
     private final String yearConvert(long yearNumber) {
@@ -171,9 +155,14 @@ public class Compute {
         String returnValue = "";
         String yearConvertMemory[][] = new String[yearLength][2];
         for (long yearNumber_ = yearNumber; yearNumber_ > 0; yearNumber_ /= 10) {
-            short Circulate = 0;// 0表示个位，1表示十位，以此类推
+            short Circulate = 0;// 0 表示个位，1 表示十位，以此类推
             yearConvertMemory[Circulate][0] = String.valueOf(yearNumber_ % 10);
-            yearConvertMemory[Circulate][1] = numberConvert(Long.valueOf(yearConvertMemory[Circulate][0]));
+            try {
+                yearConvertMemory[Circulate][1] = numberConvert(
+                        (short) Integer.parseInt(yearConvertMemory[Circulate][0]));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
             returnValue = yearConvertMemory[Circulate][1] + returnValue;
         }
         if (yearNumber == 1L) {
@@ -183,65 +172,15 @@ public class Compute {
     }
 
     private final String monthConvert(short monthNumber) {
-        switch (monthNumber) {
-            case 0:
-                return AQUA + "寂月";
-            case 1:
-                return AQUA + "雪月";
-            case 2:
-                return AQUA + "海月";
-            case 3:
-                return AQUA + "夜月";
-            case 4:
-                return AQUA + "彗月";
-            case 5:
-                return AQUA + "凉月";
-            case 6:
-                return AQUA + "芷月";
-            case 7:
-                return GREEN + "茸月";
-            case 8:
-                return GREEN + "雨月";
-            case 9:
-                return GREEN + "花月";
-            case 10:
-                return GREEN + "梦月";
-            case 11:
-                return GREEN + "音月";
-            case 12:
-                return GREEN + "晴月";
-            case 13:
-                return GREEN + "岚月";
-            case 14:
-                return RED + "萝月";
-            case 15:
-                return RED + "苏月";
-            case 16:
-                return RED + "茜月";
-            case 17:
-                return RED + "梨月";
-            case 18:
-                return RED + "荷月";
-            case 19:
-                return RED + "茶月";
-            case 20:
-                return RED + "茉月";
-            case 21:
-                return GOLD + "铃月";
-            case 22:
-                return GOLD + "信月";
-            case 23:
-                return GOLD + "瑶月";
-            case 24:
-                return GOLD + "风月";
-            case 25:
-                return GOLD + "叶月";
-            case 26:
-                return GOLD + "霜月";
-            case 27:
-                return GOLD + "奈月";
-            default:
-                return "";
+        String str = String.valueOf(monthString.charAt(monthNumber)) + "月";
+        if (7 > monthNumber) {
+            return AQUA + str;
+        } else if (14 > monthNumber) {
+            return GREEN + str;
+        } else if (21 > monthNumber) {
+            return RED + str;
+        } else {
+            return GOLD + str;
         }
     }
 
@@ -249,20 +188,8 @@ public class Compute {
         String dayConvertMemory[][] = new String[2][2];
         dayConvertMemory[1][0] = String.valueOf(dayNumber / 10);
         dayConvertMemory[0][0] = String.valueOf(dayNumber % 10);
-        switch (dayConvertMemory[1][0]) {
-            case "0":
-                dayConvertMemory[1][1] = "初";
-                break;
-            case "1":
-                dayConvertMemory[1][1] = "十";
-                break;
-            case "2":
-                dayConvertMemory[1][1] = "廿";
-                break;
-            default:
-                dayConvertMemory[1][1] = "";
-        }
-        dayConvertMemory[0][1] = numberConvert(Integer.parseInt(dayConvertMemory[0][0].toString()));
+        dayConvertMemory[1][1] = String.valueOf(dayString.charAt(Integer.parseInt(dayConvertMemory[1][0])));
+        dayConvertMemory[0][1] = numberConvert((short) Integer.parseInt(dayConvertMemory[0][0].toString()));
         switch (dayNumber) {
             case 10:
                 return "初十";

@@ -70,7 +70,7 @@ public class Reward {
             ItemStack itemReward = musicDisc(Short.valueOf(monthReward.quantity), seed - annoDay);
             return itemReward;
         } else {
-            ItemStack itemReward = new ItemStack(Material.getMaterial(monthReward.id),
+            ItemStack itemReward = new ItemStack(Material.getMaterial(monthReward.id.toUpperCase()),
                     Integer.valueOf(monthReward.quantity));
             return mendingOrLuck(monthReward, itemReward);
         }
@@ -99,7 +99,7 @@ public class Reward {
     private ItemStack musicDisc(short quantity, long seed) {
         int randomNumber = new Random(seed).nextInt(15);
         String id = Anno.annoConfig.getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
-        ItemStack itemReward = new ItemStack(Material.getMaterial(id), Integer.valueOf(quantity));
+        ItemStack itemReward = new ItemStack(Material.getMaterial(id.toUpperCase()), Integer.valueOf(quantity));
         return itemReward;
     }
 

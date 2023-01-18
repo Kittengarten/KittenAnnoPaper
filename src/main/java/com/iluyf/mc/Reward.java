@@ -8,7 +8,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -19,7 +18,7 @@ import org.bukkit.potion.PotionData;
 
 import static org.bukkit.ChatColor.*;
 
-public class Reward extends JavaPlugin {
+public class Reward {
     class MonthReward {
         String name, id, quantity;
     }
@@ -30,17 +29,17 @@ public class Reward extends JavaPlugin {
         int randomNumber = new Random(seed - annoDay).nextInt(100);
         for (monthCycle = 0; monthCycle <= Compute.commonYearMonthCount; ++monthCycle) {
             if (randomNumber < Short
-                    .valueOf(getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".weight"))) {
-                monthReward.name = getConfig().getString("reward.month" + String.valueOf(monthCycle - 1) + ".name");
-                monthReward.id = getConfig().getString("reward.month" + String.valueOf(monthCycle - 1) + ".id");
-                monthReward.quantity = getConfig()
+                    .valueOf(Anno.annoConfig.getString("reward.month" + String.valueOf(monthCycle) + ".weight"))) {
+                monthReward.name = Anno.annoConfig.getString("reward.month" + String.valueOf(monthCycle - 1) + ".name");
+                monthReward.id = Anno.annoConfig.getString("reward.month" + String.valueOf(monthCycle - 1) + ".id");
+                monthReward.quantity = Anno.annoConfig
                         .getString("reward.month" + String.valueOf(monthCycle - 1) + ".quantity");
                 break;
             }
             if (monthCycle == Compute.commonYearMonthCount) {
-                monthReward.name = getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".name");
-                monthReward.id = getConfig().getString("reward.month" + String.valueOf(monthCycle) + ".id");
-                monthReward.quantity = getConfig()
+                monthReward.name = Anno.annoConfig.getString("reward.month" + String.valueOf(monthCycle) + ".name");
+                monthReward.id = Anno.annoConfig.getString("reward.month" + String.valueOf(monthCycle) + ".id");
+                monthReward.quantity = Anno.annoConfig
                         .getString("reward.month" + String.valueOf(monthCycle) + ".quantity");
             }
         }
@@ -55,9 +54,9 @@ public class Reward extends JavaPlugin {
         MonthReward monthReward = new MonthReward();
         short normalNumber = (short) new Compute().annoToValue(annoDay)[1];
         for (short monthCycle = 0; monthCycle <= Compute.commonYearMonthCount; ++monthCycle) {
-            monthReward.name = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".name");
-            monthReward.id = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".id");
-            monthReward.quantity = getConfig().getString("reward.month" + String.valueOf(normalNumber) + ".quantity");
+            monthReward.name = Anno.annoConfig.getString("reward.month" + String.valueOf(normalNumber) + ".name");
+            monthReward.id = Anno.annoConfig.getString("reward.month" + String.valueOf(normalNumber) + ".id");
+            monthReward.quantity = Anno.annoConfig.getString("reward.month" + String.valueOf(normalNumber) + ".quantity");
         }
         Bukkit.getServer()
                 .broadcast(Component.text((BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET
@@ -99,7 +98,7 @@ public class Reward extends JavaPlugin {
 
     private ItemStack musicDisc(short quantity, long seed) {
         int randomNumber = new Random(seed).nextInt(15);
-        String id = getConfig().getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
+        String id = Anno.annoConfig.getString("reward.month11.ids.id" + String.valueOf(randomNumber + 1));
         ItemStack itemReward = new ItemStack(Material.getMaterial(id), Integer.valueOf(quantity));
         return itemReward;
     }

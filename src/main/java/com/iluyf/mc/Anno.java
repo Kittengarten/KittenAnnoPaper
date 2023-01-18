@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -21,6 +22,7 @@ public class Anno extends JavaPlugin implements Listener {
     private final static int secondsPerDay = 85653;
 
     public static long day;
+    public static FileConfiguration annoConfig;
 
     // 获取天数戳
     public long getDay() throws ParseException {
@@ -31,6 +33,7 @@ public class Anno extends JavaPlugin implements Listener {
         return wtaUnix / secondsPerDay;
     }
 
+    // 获取播报内容
     public String getAnnoBroadcast() {
         try {
             day = getDay();
@@ -51,6 +54,7 @@ public class Anno extends JavaPlugin implements Listener {
     public void onEnable() {
         this.getCommand("kittenanno").setExecutor(new AnnoCommand());
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        annoConfig=getConfig();
         getLogger().info(GREEN + "世界树纪元开始运行。");
         new BukkitRunnable() {
             @Override
@@ -88,7 +92,7 @@ public class Anno extends JavaPlugin implements Listener {
     public final class JoinListener implements Listener {
         @EventHandler
         public void onJoin(PlayerJoinEvent event) throws ParseException {
-            event.getPlayer().sendMessage(getConfig().getString("welcome_messages"));
+            event.getPlayer().sendMessage(annoConfig.getString("welcome_messages"));
             event.getPlayer().sendMessage("今天是" + getAnnoBroadcast());
         }
     }

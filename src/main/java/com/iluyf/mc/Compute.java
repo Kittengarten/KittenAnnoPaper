@@ -82,13 +82,13 @@ public class Compute {
         return true;
     }
 
-    // 输出月数戳对应的年数戳、月份
+    // 返回月数戳对应的年数戳、月份
     private final YearMonth toYearMonth(long month) {
         YearMonth yearMonthNumber = new YearMonth();
         long yearCycleCount = month / yearCycleMonthCount;
         short netMonth = (short) (month % yearCycleMonthCount);
         short i = 0;
-        while (netMonth >= yearCycleFirstmonthMonth[i] && i < yearCycle)
+        while (yearCycle > i && netMonth >= yearCycleFirstmonthMonth[i])
             ++i;
         yearMonthNumber.year = yearCycleCount * yearCycle + i - 1;
         yearMonthNumber.month = (short) (netMonth - yearCycleFirstmonthMonth[i - 1] + 1);
@@ -99,13 +99,13 @@ public class Compute {
         return yearMonthNumber;
     }
 
-    // 输出天数戳对应的月数戳、日期
-    final MonthDay toMonthDay(long day) {
+    // 返回天数戳对应的月数戳、日期
+    private final MonthDay toMonthDay(long day) {
         MonthDay monthDayNumber = new MonthDay();
         long monthCycleCount = day / monthCycleDayCount;
         short netDay = (short) (day % monthCycleDayCount);
         short i = 1;
-        while (netDay >= monthCycleFirstdayDay[i] && i < monthCycle)
+        while (monthCycle > i && netDay >= monthCycleFirstdayDay[i])
             ++i;
         monthDayNumber.month = monthCycleCount * monthCycle + i - 1;
         monthDayNumber.day = (short) (netDay - monthCycleFirstdayDay[i - 1] + 1);

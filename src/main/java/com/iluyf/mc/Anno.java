@@ -38,7 +38,7 @@ public class Anno extends JavaPlugin implements Listener {
         try {
             day = getDay();
             Compute annoCompute = new Compute();
-            return annoCompute.output(day + 1);
+            return annoCompute.output(day);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,7 @@ public class Anno extends JavaPlugin implements Listener {
     public void onEnable() {
         this.getCommand("kittenanno").setExecutor(new AnnoCommand());
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        annoConfig=getConfig();
+        annoConfig = getConfig();
         getLogger().info(GREEN + "世界树纪元开始运行。");
         new BukkitRunnable() {
             @Override

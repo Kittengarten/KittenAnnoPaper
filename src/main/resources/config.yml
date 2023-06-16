@@ -46,8 +46,8 @@ reward:
     quantity: 4
     weight: 16
   month9:
-    name: 凋零玫瑰
-    id: wither_rose
+    name: 孢子花
+    id: spore_blossom
     quantity: 1
     weight: 18
   month10:

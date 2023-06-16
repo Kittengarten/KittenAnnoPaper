@@ -41,7 +41,7 @@ public class Compute {
     // 计算闰年
     private final void yearCycleFirstmonthMonthCompute() {
         yearCycleFirstmonthMonth[0] = 0;
-        for (short i = 1; i < yearCycle; ++i) {
+        for (short i = 1; yearCycle > i; ++i) {
             if (isCommonYear(i - 1))
                 yearCycleFirstmonthMonth[i] = (short) (yearCycleFirstmonthMonth[i - 1] + commonYearMonthCount);
             else
@@ -63,7 +63,7 @@ public class Compute {
     // 计算大月
     private final void monthCycleFirstdayDayCompute() {
         monthCycleFirstdayDay[0] = 0;
-        for (short i = 1; i < monthCycle; ++i) {
+        for (short i = 1; monthCycle > i; ++i) {
             if (isCommonMonth(i - 1))
                 monthCycleFirstdayDay[i] = (short) (monthCycleFirstdayDay[i - 1] + commonMonthDayCount);
             else
@@ -104,7 +104,7 @@ public class Compute {
         MonthDay monthDayNumber = new MonthDay();
         long monthCycleCount = day / monthCycleDayCount;
         short netDay = (short) (day % monthCycleDayCount);
-        short i = 1;
+        short i = 0;
         while (monthCycle > i && netDay >= monthCycleFirstdayDay[i])
             ++i;
         monthDayNumber.month = monthCycleCount * monthCycle + i - 1;
@@ -119,8 +119,8 @@ public class Compute {
         YearMonth yearMonth = new YearMonth();
         yearMonth = toYearMonth(monthDay.month);
         short monthNumber = (short) yearMonth.month;
-        long yearNumber = yearMonth.year;
-        if (yearNumber > 0 && monthNumber >= 0 && dayNumber > 0) {
+        long yearNumber = yearMonth.year + 1;
+        if (0 < yearNumber && 0 <= monthNumber && 0 < dayNumber) {
             return BOLD + yearConvert(yearNumber) + RESET + monthConvert(monthNumber) + RESET
                     + dayConvert((short) dayNumber);
         } else {
@@ -136,7 +136,7 @@ public class Compute {
         yearMonth = toYearMonth(monthDay.month);
         short monthNumber = (short) yearMonth.month;
         long yearNumber = yearMonth.year;
-        if (yearNumber > 0 && monthNumber >= 0 && dayNumber > 0) {
+        if (0 < yearNumber && 0 <= monthNumber && 0 < dayNumber) {
             long[] returnValue = { yearNumber, monthNumber, dayNumber };
             return returnValue;
         } else {

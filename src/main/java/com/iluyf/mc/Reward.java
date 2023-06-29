@@ -15,8 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.potion.PotionType;
 import net.kyori.adventure.text.Component;
 import org.bukkit.potion.PotionData;
-
-import static org.bukkit.ChatColor.*;
+import net.kyori.adventure.text.format.Style;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.*;
 
 public class Reward {
     class MonthReward {
@@ -44,9 +45,9 @@ public class Reward {
             }
         }
         Bukkit.getServer()
-                .broadcast(Component.text(BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET + BOLD
-                        + "月中随机奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward.name + "]" + RESET + GREEN
-                        + monthReward.quantity + RESET + "个"));
+                .broadcast(Component.text(BOLD + "给予" + Style.empty() + BLUE + UNDERLINED + "[" + playerName + "]" + Style.empty() + BOLD
+                        + "月中随机奖励：" + Style.empty() + YELLOW + UNDERLINED + "[" + monthReward.name + "]" + Style.empty() + GREEN
+                        + monthReward.quantity + Style.empty() + "个"));
         return rewardOutput(monthReward, seed, annoDay);
     }
 
@@ -59,9 +60,9 @@ public class Reward {
             monthReward.quantity = Anno.annoConfig.getString("reward.month" + String.valueOf(normalNumber) + ".quantity");
         }
         Bukkit.getServer()
-                .broadcast(Component.text((BOLD + "给予" + RESET + BLUE + UNDERLINE + "[" + playerName + "]" + RESET
-                        + BOLD + "月初固定奖励：" + RESET + YELLOW + UNDERLINE + "[" + monthReward.name + "]" + RESET + GREEN
-                        + monthReward.quantity + RESET + "个")));
+                .broadcast(Component.text((BOLD + "给予" + Style.empty() + BLUE + UNDERLINED + "[" + playerName + "]" + Style.empty()
+                        + BOLD + "月初固定奖励：" + Style.empty() + YELLOW + UNDERLINED + "[" + monthReward.name + "]" + Style.empty() + GREEN
+                        + monthReward.quantity + Style.empty() + "个")));
         return rewardOutput(monthReward, seed, annoDay);
     }
 

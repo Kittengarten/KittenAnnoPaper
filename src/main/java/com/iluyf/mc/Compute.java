@@ -1,6 +1,8 @@
 package com.iluyf.mc;
 
-import static org.bukkit.ChatColor.*;
+import net.kyori.adventure.text.format.Style;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.*;
 
 public class Compute {
     final static short commonYearMonthCount = 27; // 平年的月数
@@ -121,8 +123,8 @@ public class Compute {
         short monthNumber = (short) yearMonth.month;
         long yearNumber = yearMonth.year + 1;
         if (0 < yearNumber && 0 <= monthNumber && 0 < dayNumber) {
-            return BOLD + yearConvert(yearNumber) + RESET + monthConvert(monthNumber) + RESET
-                    + dayConvert((short) dayNumber);
+            return BOLD + yearConvert(yearNumber) + Style.empty() + monthConvert(monthNumber) + Style.empty()
+                    + dayConvert((short) dayNumber) + Style.empty();
         } else {
             return "";
         }
@@ -155,7 +157,7 @@ public class Compute {
         String returnValue = "";
         String yearConvertMemory[][] = new String[yearLength][2];
         for (long yearNumber_ = yearNumber; yearNumber_ > 0; yearNumber_ /= 10) {
-            short Circulate = 0;// 0 表示个位，1 表示十位，以此类推
+            short Circulate = 0; // 0 表示个位，1 表示十位，以此类推
             yearConvertMemory[Circulate][0] = String.valueOf(yearNumber_ % 10);
             try {
                 yearConvertMemory[Circulate][1] = numberConvert(

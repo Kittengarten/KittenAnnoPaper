@@ -14,8 +14,8 @@ import net.kyori.adventure.text.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import static org.bukkit.ChatColor.*;
+import net.kyori.adventure.text.format.Style;
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public class Anno extends JavaPlugin implements Listener {
     private final static String kittenDay = "2017 年 04 月 25 日";
@@ -47,7 +47,7 @@ public class Anno extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        getLogger().info(AQUA + "世界树纪元已加载。");
+        getLogger().info(AQUA + "世界树纪元已加载。" + Style.empty());
     }
 
     @Override
@@ -55,14 +55,14 @@ public class Anno extends JavaPlugin implements Listener {
         this.getCommand("kittenanno").setExecutor(new AnnoCommand());
         getServer().getPluginManager().registerEvents(new JoinListener(), this);
         annoConfig = getConfig();
-        getLogger().info(GREEN + "世界树纪元开始运行。");
+        getLogger().info(GREEN + "世界树纪元开始运行。" + Style.empty());
         new BukkitRunnable() {
             @Override
             public void run() {
                 try {
                     if (getDay() > day) {
                         Bukkit.getServer().broadcast(Component.text(getAnnoBroadcast()));
-                        new Reward().giveReward(day + 1);
+                        new Reward().giveReward(day);
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -73,7 +73,7 @@ public class Anno extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-        getLogger().info(RED + "世界树纪元暂停运行。");
+        getLogger().info(RED + "世界树纪元暂停运行。" + Style.empty());
     }
 
     public class AnnoCommand implements CommandExecutor {

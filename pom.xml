@@ -7,7 +7,7 @@
     <!-- The Basics -->
     <groupId>com.iluyf.mc</groupId>
     <artifactId>KittenAnnoPaper</artifactId>
-    <version>3.1</version>
+    <version>3.2</version>
     <name>KittenAnno</name>
     <description>Minecraft 世界树纪元 Paper 插件</description>
     <url>https://github.com/Kittengarten/KittenAnnoPaper</url>
@@ -30,7 +30,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.9.0</version>
                 <configuration>
-                    <release>19</release>
+                    <release>17</release>
                 </configuration>
             </plugin>
         </plugins>

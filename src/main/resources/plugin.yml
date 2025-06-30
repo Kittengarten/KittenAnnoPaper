@@ -1,8 +1,8 @@
 name: KittenAnnoPaper
 main: com.iluyf.mc.Anno
-version: 3.0
+version: 3.3.0
 description: 用于 Paper 的世界树纪元插件
-api-version: 1.19
+api-version: "1.21"
 author: Kittengarten
 website: https://github.com/Kittengarten/KittenAnnoPaper
 load: STARTUP

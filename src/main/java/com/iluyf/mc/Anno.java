@@ -1,97 +1,116 @@
 package com.iluyf.mc;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import net.kyori.adventure.text.Component;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import static net.kyori.adventure.text.format.NamedTextColor.*;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public class Anno extends JavaPlugin implements Listener {
-    private final static String kittenDay = "2017 年 04 月 25 日";
-    private final static int secondsPerDay = 85653;
 
-    public static long day;
-    public static FileConfiguration annoConfig;
+    public static final String WTA = "世界树纪元";
+    private static final String KITTEN_DAY = "2017 年 04 月 25 日";
+    private static final DateTimeFormatter formater = DateTimeFormatter.ofPattern("yyyy 年 MM 月 dd 日");
+    private static final long KITTEN_EPOCH = LocalDate.parse(KITTEN_DAY, formater).atStartOfDay(ZoneOffset.UTC).toEpochSecond();
+    private static final int SECONDS_PER_DAY = 85653;
+    private static final int TIME_RATIO = 72; // Minecraft 72 倍时间流速
+    public static final JoinConfiguration JOIN_CONF = JoinConfiguration.noSeparators();
+    BukkitRunnable scheduler;
+    static long day;
+    static FileConfiguration annoConfig;
 
     // 获取天数戳
-    public long getDay() throws ParseException {
-        long unix = System.currentTimeMillis() / 1000L - 8 * 3600; // 排除时区影响（硬编码，仅适用于 UTC+8）
-        DateFormat df = new SimpleDateFormat("yyyy 年 MM 月 dd 日");
-        long epoch = df.parse(kittenDay).getTime() / 1000L; // 初始时间戳
-        long wtaUnix = 72 * (unix - epoch) + System.currentTimeMillis() % 1000 * 72 / 1000;
-        return wtaUnix / secondsPerDay;
+    public static long getDay() {
+        Instant now = Instant.now();
+        return (TIME_RATIO * (now.getEpochSecond() - KITTEN_EPOCH)
+                + now.toEpochMilli() % 1000 * TIME_RATIO / 1000)
+                / SECONDS_PER_DAY;
     }
 
     // 获取播报内容
-    public Component getAnnoBroadcast() {
-        try {
-            day = getDay();
-            Compute annoCompute = new Compute();
-            return annoCompute.output(day);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return Component.text("");
+    public static Component getAnnoBroadcast() {
+        day = getDay();
+        return Compute.output(day);
     }
 
     @Override
     public void onLoad() {
-        getServer().sendMessage(Component.text("世界树纪元已加载。", AQUA));
+        getServer().sendMessage(Component.text(WTA + "已加载。", NamedTextColor.AQUA));
     }
 
     @Override
     public void onEnable() {
-        this.getCommand("kittenanno").setExecutor(new AnnoCommand());
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
-        annoConfig = getConfig();
-        getServer().sendMessage(Component.text("世界树纪元开始运行。", GREEN));
-        new BukkitRunnable() {
+        this.scheduler = new BukkitRunnable() {
             @Override
             public void run() {
-                try {
-                    if (getDay() > day) {
-                        getServer().sendMessage(getAnnoBroadcast());
-                        new Reward().giveReward(day);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                if (getDay() > day) {
+                    getServer().sendMessage(getAnnoBroadcast());
+                    Reward reward = new Reward();
+                    reward.giveReward(day);
+                    reward.givePLISReward(day);
                 }
             }
-        }.runTaskTimer(this, 100L, 100L);
+        };
+        this.scheduler.runTaskTimer(this, 100L, 100L);
+        PluginCommand command = this.getCommand("kittenanno");
+        if (command != null) {
+            command.setExecutor(new AnnoCommand());
+        } else {
+            getLogger().severe("无法使用命令 'kittenanno'：未在 plugin.yml 中注册！");
+        }
+        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        annoConfig = getConfig();
+        getServer().sendMessage(Component.text(WTA + "开始运行。", NamedTextColor.GREEN));
     }
 
     @Override
     public void onDisable() {
-        getServer().sendMessage(Component.text("世界树纪元暂停运行。", RED));
+        if (scheduler != null && !scheduler.isCancelled()) {
+            scheduler.cancel();
+        }
+        getServer().sendMessage(Component.text(WTA + "暂停运行。", NamedTextColor.RED));
     }
 
-    public class AnnoCommand implements CommandExecutor {
+    class AnnoCommand implements CommandExecutor {
+
         @Override
         public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-            if (cmd.getName().equalsIgnoreCase("kittenanno") || cmd.getName().equalsIgnoreCase("anno")) {
-                if (sender.hasPermission("kittenanno.anno")) {
-                    sender.sendMessage(getAnnoBroadcast());
-                    return true;
-                }
+            String commandName = cmd.getName().toLowerCase();
+            if (!commandName.equals("kittenanno") && !commandName.equals("anno")) {
+                return false;
             }
-            return false;
+            sender.sendMessage(sender.hasPermission("kittenanno.anno")
+                    ? getAnnoBroadcast()
+                    : Component.text("无权使用命令！"));
+            return true;
         }
     }
 
-    public final class JoinListener implements Listener {
+    final class JoinListener implements Listener {
+
         @EventHandler
         public void onJoin(PlayerJoinEvent event) throws ParseException {
-            event.getPlayer().sendMessage(annoConfig.getString("welcome_messages"));
-            event.getPlayer().sendMessage(Component.text("今天是").append(getAnnoBroadcast()));
+            Player player = event.getPlayer();
+            String welcome_messages = annoConfig.getString("welcome_messages");
+            player.sendMessage(welcome_messages != null && !welcome_messages.trim().isEmpty()
+                    ? welcome_messages : "欢迎来到幼喵园！");
+            player.sendMessage(Component.text("今天是").append(getAnnoBroadcast()));
         }
     }
 }
